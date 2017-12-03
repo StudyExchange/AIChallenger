@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>2. Feature_extraction_from_VGG16_to_InceptionResNetV2</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>1. Preprocess-KerasFolderClasses-Test_b</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11775,18 +11775,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="2.-Feature_extraction_from_VGG16_to_InceptionResNetV2">2. Feature_extraction_from_VGG16_to_InceptionResNetV2<a class="anchor-link" href="#2.-Feature_extraction_from_VGG16_to_InceptionResNetV2">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="References:">References:<a class="anchor-link" href="#References:">&#182;</a></h3><ol>
-<li><a href="https://github.com/ypwhs/dogs_vs_cats">https://github.com/ypwhs/dogs_vs_cats</a></li>
-<li><a href="https://www.kaggle.com/yangpeiwen/keras-inception-xception-0-47">https://www.kaggle.com/yangpeiwen/keras-inception-xception-0-47</a></li>
-</ol>
+<h1 id="Scene-Classification-Test_b">Scene Classification-Test_b<a class="anchor-link" href="#Scene-Classification-Test_b">&#182;</a></h1><h2 id="1.-Preprocess-KerasFolderClasses">1. Preprocess-KerasFolderClasses<a class="anchor-link" href="#1.-Preprocess-KerasFolderClasses">&#182;</a></h2><ul>
+<li>Import pkg</li>
+<li>Extract zip file</li>
+<li>Preview "scene_classes.csv"</li>
+<li>Preview "scene_{0}_annotations_20170922.json"</li>
+<li>Test the image and pickle function</li>
+<li>Split data into serval pickle file</li>
+</ul>
 
 </div>
 </div>
@@ -11795,7 +11791,21 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Import-pkgs">Import pkgs<a class="anchor-link" href="#Import-pkgs">&#182;</a></h3>
+<p>This part need jupyter notebook start with "jupyter notebook --NotebookApp.iopub_data_rate_limit=1000000000" (<a href="https://github.com/jupyter/notebook/issues/2287">https://github.com/jupyter/notebook/issues/2287</a>)</p>
+<p>Reference:</p>
+<ul>
+<li><a href="https://challenger.ai/competitions">https://challenger.ai/competitions</a></li>
+<li><a href="https://github.com/jupyter/notebook/issues/2287">https://github.com/jupyter/notebook/issues/2287</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Import-pkg">Import pkg<a class="anchor-link" href="#Import-pkg">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -11804,16 +11814,33 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">h5py</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="c1"># import matplotlib as mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.image</span> <span class="k">as</span> <span class="nn">mpimg</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">confusion_matrix</span>
+</pre></div>
 
-<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">keras.models</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">keras.applications</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">keras.optimizers</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">keras.regularizers</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">keras.preprocessing.image</span> <span class="k">import</span> <span class="o">*</span>
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">keras.utils.np_utils</span> <span class="k">import</span> <span class="n">to_categorical</span> <span class="c1"># convert to one-hot-encoding</span>
+<span class="kn">from</span> <span class="nn">keras.models</span> <span class="k">import</span> <span class="n">Sequential</span>
+<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="k">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">Flatten</span><span class="p">,</span> <span class="n">Conv2D</span><span class="p">,</span> <span class="n">MaxPool2D</span><span class="p">,</span> <span class="n">BatchNormalization</span>
+<span class="kn">from</span> <span class="nn">keras.optimizers</span> <span class="k">import</span> <span class="n">Adam</span>
+<span class="kn">from</span> <span class="nn">keras.preprocessing.image</span> <span class="k">import</span> <span class="n">ImageDataGenerator</span>
+<span class="kn">from</span> <span class="nn">keras.callbacks</span> <span class="k">import</span> <span class="n">LearningRateScheduler</span><span class="p">,</span> <span class="n">TensorBoard</span>
 </pre></div>
 
 </div>
@@ -11841,125 +11868,58 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_features</span><span class="p">(</span><span class="n">MODEL</span><span class="p">,</span> <span class="n">image_size</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lambda_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> start.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">MODEL</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    
-    <span class="n">width</span> <span class="o">=</span> <span class="n">image_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">height</span> <span class="o">=</span> <span class="n">image_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">input_tensor</span> <span class="o">=</span> <span class="n">Input</span><span class="p">((</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">input_tensor</span>
-    <span class="k">if</span> <span class="n">lambda_func</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">lambda_func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">Lambda</span><span class="p">(</span><span class="n">lambda_func</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">base_model</span> <span class="o">=</span> <span class="n">MODEL</span><span class="p">(</span><span class="n">input_tensor</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;imagenet&#39;</span><span class="p">,</span> <span class="n">include_top</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">base_model</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">GlobalAveragePooling2D</span><span class="p">()(</span><span class="n">base_model</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
-
-    <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-    <span class="n">data_train_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s1">&#39;input&#39;</span><span class="p">,</span> <span class="s1">&#39;data_train&#39;</span><span class="p">)</span>
-    <span class="n">data_val_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s1">&#39;input&#39;</span><span class="p">,</span> <span class="s1">&#39;data_validation&#39;</span><span class="p">)</span>
-<span class="c1">#     data_test_a_path  = os.path.join(cwd, &#39;input&#39;, &#39;data_test_a&#39;)</span>
-    <span class="n">data_test_b_path</span>  <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s1">&#39;input&#39;</span><span class="p">,</span> <span class="s1">&#39;data_test_b&#39;</span><span class="p">)</span>
-    
-    <span class="n">gen</span> <span class="o">=</span> <span class="n">ImageDataGenerator</span><span class="p">()</span>
-<span class="c1">#     gen = ImageDataGenerator(zoom_range = 0.1,</span>
-<span class="c1">#                             height_shift_range = 0.1,</span>
-<span class="c1">#                             width_shift_range = 0.1,</span>
-<span class="c1">#                             rotation_range = 10)</span>
-    <span class="n">train_generator</span> <span class="o">=</span> <span class="n">gen</span><span class="o">.</span><span class="n">flow_from_directory</span><span class="p">(</span><span class="n">data_train_path</span><span class="p">,</span> <span class="n">image_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
-                                              <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
-    <span class="n">val_generator</span>  <span class="o">=</span> <span class="n">gen</span><span class="o">.</span><span class="n">flow_from_directory</span><span class="p">(</span><span class="n">data_val_path</span><span class="p">,</span>  <span class="n">image_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
-                                              <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
-<span class="c1">#     test_a_generator  = gen.flow_from_directory(data_test_a_path,  image_size, shuffle=False, </span>
-<span class="c1">#                                               batch_size=batch_size)</span>
-    <span class="n">test_b_generator</span>  <span class="o">=</span> <span class="n">gen</span><span class="o">.</span><span class="n">flow_from_directory</span><span class="p">(</span><span class="n">data_test_b_path</span><span class="p">,</span>  <span class="n">image_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
-                                              <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
-    
-<span class="c1">#     train = model.predict_generator(train_generator, verbose=1, steps=53879)</span>
-<span class="c1">#     val = model.predict_generator(val_generator, verbose=1, steps=7120)</span>
-<span class="c1">#     test = model.predict_generator(test_generator, verbose=1, steps=7040)</span>
-    <span class="n">train</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_generator</span><span class="p">(</span><span class="n">train_generator</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_queue_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-    <span class="n">val</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_generator</span><span class="p">(</span><span class="n">val_generator</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_queue_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-<span class="c1">#     test_a = model.predict_generator(test_a_generator, verbose=1, steps=10, max_queue_size=128, workers=16)</span>
-    <span class="n">test_b</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_generator</span><span class="p">(</span><span class="n">test_b_generator</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_queue_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-    
-<span class="c1">#     print(&#39;filenames:&#39; + str(len(val_generator.filenames)))</span>
-<span class="c1">#     print(val_generator.filenames[0:10])</span>
-<span class="c1">#     print(&#39;filenames:&#39; + str(len(test_generator.filenames)))</span>
-<span class="c1">#     print(test_generator.filenames[0:10])</span>
-    
-    <span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_</span><span class="si">{0}</span><span class="s1">_</span><span class="si">{1}</span><span class="s1">.h5&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">MODEL</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="mi">171202</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">h</span><span class="p">:</span>
-        <span class="n">h</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
-        <span class="n">h</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;train_label&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">train_generator</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span>
-        <span class="n">h</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;val&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
-        <span class="n">h</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;val_label&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">val_generator</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span>
-<span class="c1">#         h.create_dataset(&quot;test_a&quot;, data=test_a)</span>
-        <span class="n">h</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;test_b&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">test_b</span><span class="p">)</span>
-        
-<span class="c1">#     print(train.shape)</span>
-<span class="c1">#     print(len(train_generator.classes))</span>
-<span class="c1">#     print(val.shape)</span>
-<span class="c1">#     print(len(val_generator.classes))</span>
-<span class="c1">#     print(test.shape)</span>
-    
-<span class="c1">#     print(dir(train_generator))</span>
-<span class="c1">#     print(train_generator.samples)</span>
-<span class="c1">#     print(train_generator.image_shape)</span>
-<span class="c1">#     print(train_generator.classes)</span>
-    
-    <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Spend time: </span><span class="si">{0}</span><span class="s1"> s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">pdb</span> off
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import zipfile</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">display</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Automatic pdb calling has been turned OFF
-</pre>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Extract-zip-file">Extract zip file<a class="anchor-link" href="#Extract-zip-file">&#182;</a></h3>
 </div>
 </div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_features</span><span class="p">(</span><span class="n">VGG16</span><span class="p">,</span> <span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">input_path</span> <span class="o">=</span> <span class="s1">&#39;input&#39;</span>
+<span class="n">datasetName</span> <span class="o">=</span> <span class="s1">&#39;test_b&#39;</span>
+<span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;20170922&#39;</span>
+
+<span class="n">datasetFolder</span> <span class="o">=</span> <span class="n">input_path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">data_</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datasetName</span><span class="p">)</span>
+<span class="n">zip_path</span> <span class="o">=</span> <span class="n">input_path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">ai_challenger_scene_</span><span class="si">{0}</span><span class="s1">_</span><span class="si">{1}</span><span class="s1">.zip&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datasetName</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
+<span class="n">extract_path</span> <span class="o">=</span> <span class="n">input_path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">ai_challenger_scene_</span><span class="si">{0}</span><span class="s1">_</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datasetName</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
+<span class="n">image_path</span> <span class="o">=</span> <span class="n">extract_path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">scene_</span><span class="si">{0}</span><span class="s1">_images_</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datasetName</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
+<span class="n">scene_classes_path</span> <span class="o">=</span> <span class="n">extract_path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">scene_classes.csv&#39;</span>
+<span class="n">scene_annotations_path</span> <span class="o">=</span> <span class="n">extract_path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">scene_</span><span class="si">{0}</span><span class="s1">_annotations_</span><span class="si">{1}</span><span class="s1">.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datasetName</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">datasetFolder</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">zip_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">extract_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">scene_classes_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">scene_annotations_path</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11976,15 +11936,13 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>VGG16 start.
-Found 53879 images belonging to 80 classes.
-Found 7120 images belonging to 80 classes.
-Found 7078 images belonging to 1 classes.
-53879/53879 [==============================] - 399s 7ms/step
-7120/7120 [==============================] - 53s 7ms/step
-7078/7078 [==============================] - 53s 7ms/step
-E:\AIChallenger\SceneClassification2017\model\feature_VGG16_171202.h5
-Spend time: 517.0663092136383 s
+<pre>input
+input\data_test_b
+input\ai_challenger_scene_test_b_20170922.zip
+input\ai_challenger_scene_test_b_20170922
+input\ai_challenger_scene_test_b_20170922\scene_test_b_images_20170922
+input\ai_challenger_scene_test_b_20170922\scene_classes.csv
+input\ai_challenger_scene_test_b_20170922\scene_test_b_annotations_20170922.json
 </pre>
 </div>
 </div>
@@ -11998,23 +11956,110 @@ Spend time: 517.0663092136383 s
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># get_features(VGG19, (224, 224), 1)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">extract_path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">file</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">input_path</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Preview-&quot;scene_classes.csv&quot;">Preview "scene_classes.csv"<a class="anchor-link" href="#Preview-&quot;scene_classes.csv&quot;">&#182;</a></h3>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># get_features(ResNet50, (224, 224), 1)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">scene_classes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">scene_classes_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">scene_classes</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>航站楼</td>
+      <td>airport_terminal</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>停机坪</td>
+      <td>landing_field</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>机舱</td>
+      <td>airplane_cabin</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>游乐场</td>
+      <td>amusement_park</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>冰场</td>
+      <td>skating_rink</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -12024,20 +12069,10 @@ Spend time: 517.0663092136383 s
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># get_features(Xception, (299, 299), 1, xception.preprocess_input)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_features</span><span class="p">(</span><span class="n">InceptionV3</span><span class="p">,</span> <span class="p">(</span><span class="mi">299</span><span class="p">,</span> <span class="mi">299</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inception_v3</span><span class="o">.</span><span class="n">preprocess_input</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_scene_name</span><span class="p">(</span><span class="n">lable_number</span><span class="p">,</span> <span class="n">scene_classes_path</span><span class="p">):</span>
+    <span class="n">scene_classes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">scene_classes_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">scene_classes</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lable_number</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">get_scene_name</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">scene_classes_path</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12054,20 +12089,32 @@ Spend time: 517.0663092136383 s
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>InceptionV3 start.
-preprocess_input
-Found 53879 images belonging to 80 classes.
-Found 7120 images belonging to 80 classes.
-Found 7078 images belonging to 1 classes.
-53879/53879 [==============================] - 2119s 39ms/step
-7120/7120 [==============================] - 278s 39ms/step
-7078/7078 [==============================] - 280s 40ms/step
-E:\AIChallenger\SceneClassification2017\model\feature_InceptionV3_171202.h5
-Spend time: 2724.4563817977905 s
+<pre>airport_terminal
 </pre>
 </div>
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Copy-images-to-./input/data_test_a/test">Copy images to ./input/data_test_a/test<a class="anchor-link" href="#Copy-images-to-./input/data_test_a/test">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span>  <span class="nn">shutil</span> <span class="k">import</span> <span class="n">copy2</span>
+</pre></div>
+
+</div>
 </div>
 </div>
 
@@ -12077,7 +12124,14 @@ Spend time: 2724.4563817977905 s
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_features</span><span class="p">(</span><span class="n">InceptionResNetV2</span><span class="p">,</span> <span class="p">(</span><span class="mi">299</span><span class="p">,</span> <span class="mi">299</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inception_resnet_v2</span><span class="o">.</span><span class="n">preprocess_input</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+<span class="n">test_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="n">datasetFolder</span><span class="p">)</span>
+<span class="n">test_sub_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_folder</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">test_folder</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">test_folder</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">test_sub_folder</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">test_folder</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">test_sub_folder</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12094,16 +12148,8 @@ Spend time: 2724.4563817977905 s
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>InceptionResNetV2 start.
-preprocess_input
-Found 53879 images belonging to 80 classes.
-Found 7120 images belonging to 80 classes.
-Found 7078 images belonging to 1 classes.
-53879/53879 [==============================] - 4492s 83ms/step
-7120/7120 [==============================] - 594s 83ms/step
-7078/7078 [==============================] - 595s 84ms/step
-E:\AIChallenger\SceneClassification2017\model\feature_InceptionResNetV2_171202.h5
-Spend time: 5746.545301437378 s
+<pre>E:\AIChallenger\SceneClassification2017\input\data_test_b
+E:\AIChallenger\SceneClassification2017\input\data_test_b\test
 </pre>
 </div>
 </div>
@@ -12117,7 +12163,25 @@ Spend time: 5746.545301437378 s
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done !&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">trainDir</span> <span class="o">=</span> <span class="n">test_sub_folder</span>
+<span class="k">for</span> <span class="n">image_id</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="n">image_path</span><span class="p">)):</span>
+    <span class="n">fileName</span> <span class="o">=</span> <span class="n">image_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">image_id</span>
+<span class="c1">#     print(fileName)</span>
+<span class="c1">#     print(trainDir)</span>
+    <span class="n">copy2</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span> <span class="n">trainDir</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12134,7 +12198,7 @@ Spend time: 5746.545301437378 s
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Done !
+<pre>Done!
 </pre>
 </div>
 </div>
